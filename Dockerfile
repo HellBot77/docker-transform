@@ -10,7 +10,7 @@ FROM node:16 AS build
 
 WORKDIR /transform
 COPY --from=base /git/transform .
-RUN yarn && \
+RUN yarn --network-timeout 1000000 && \
     yarn build
 
 FROM node:16-alpine
