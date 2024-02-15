@@ -11,6 +11,8 @@ FROM node:16 AS build
 WORKDIR /transform
 COPY --from=base /git/transform .
 RUN yarn --network-timeout 1000000 && \
+    export NODE_ENV=production && \
+    export NEXT_TELEMETRY_DISABLED=1 && \
     yarn build
 
 FROM node:16-alpine
