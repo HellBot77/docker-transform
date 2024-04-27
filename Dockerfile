@@ -11,8 +11,8 @@ FROM node:16 AS build
 WORKDIR /transform
 COPY --from=base /git/transform .
 RUN yarn --network-timeout 1000000 && \
-    export NODE_ENV=production && \
     export NEXT_TELEMETRY_DISABLED=1 && \
+    export NODE_ENV=production && \
     yarn build
 
 FROM node:16-alpine
@@ -23,7 +23,8 @@ COPY --from=build /transform/public ./public
 COPY --from=build /transform/.next ./.next
 COPY --from=build /transform/node_modules ./node_modules
 COPY --from=build /transform/package.json ./package.json
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV production
+
 EXPOSE 3000
 CMD ["yarn", "start"]
