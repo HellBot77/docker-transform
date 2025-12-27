@@ -33,6 +33,15 @@ jobs:
     if: ${{ needs.get-tag.outputs.tag }}
     runs-on: ubuntu-latest
     steps:
+      - name: Fetch repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.SOURCE_REPOSITORY }}
+          ref: ${{ needs.get-tag.outputs.tag }}
+      - name: Merge pull request
+        run: |
+          git fetch origin pull/413/head:pr-413
+          git merge pr-413
       - name: Set Docker Hub username
         id: dockerhub-username
         run: echo "username=${DOCKERHUB_REPOSITORY%%/*}" >> $GITHUB_OUTPUT
@@ -50,6 +59,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
           platforms: ${{ env.PLATFORMS }}
           push: true
           build-args: TAG=${{ needs.get-tag.outputs.tag }}
